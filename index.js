@@ -1,9 +1,8 @@
 const fs = require('fs');
-
-const content = fs.readFileSync('./casos/caso0.txt').toString()
-const matrix = content.split('\n').filter(e => e).map(e => e.split(''))
+const Maze = require('./Maze')
 
 
+const maze = new Maze('./casos/caso0.txt')
 
 /**
  * Returns the fist coordinates of the given `matrix` that match the value of `target`.
