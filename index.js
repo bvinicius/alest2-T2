@@ -12,23 +12,30 @@ const start = {
 }
 
 console.log(getTarget(maze, start, 'B'))
+console.log(maze.join('\n').split(',').join(''))
 
 function getTarget(matrix, start, target) {
     let q = new Queue()
     q.push(start)
 
+    let count = 0
     while(q.size()) {
         const u = q.remove()
-        mark(matrix, u.coords)
 
-        neighbors(matrix, u.coords).forEach(e => {
+        const _neighbors = neighbors(matrix, u.coords)
+
+        for(let i = 0; i < _neighbors.length; i ++) {
+            const e = _neighbors[i]
+
             if (e.value == target) {
                 console.log('ACHOU O TARGET.')
-                return e.coords
+                return count
             }
 
+            mark(matrix, e.coords)
             q.push(e)
-        })
+        }
+        count ++
     }
 }
 
@@ -71,14 +78,17 @@ function neighbors(matrix, coords) {
         coords: [i, j + 1]
     }
 
+    // console.log(up, down, left, right)
 
-    return [up, down, left, right].filter(e => (e == '.'))
+    return [up, down, left, right].filter(e => e).filter(e => (e.value != 'x' && e.value != '#' ))
 }
 
-function mark(martrix, coords) { 
+function mark(matrix, coords) { 
     const i = coords[0]
     const j = coords[1]
 
-    martrix[i][j] = 'x'
+    matrix[i][j] = 'x'
+
+    // console.log(matrix)
 }
 
