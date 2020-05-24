@@ -8,11 +8,11 @@ const maze = fs.readFileSync('./casos/caso0.txt').toString()
 
 const start = {
     value: 'A',
-    coords: coords(maze, 'A')
+    coords: coords(maze, 'A'),
+    dist: 0
 }
 
 console.log(getTarget(maze, start, 'B'))
-console.log(maze.join('\n').split(',').join(''))
 
 function getTarget(matrix, start, target) {
     let q = new Queue()
@@ -21,21 +21,15 @@ function getTarget(matrix, start, target) {
     let count = 0
     while(q.size()) {
         const u = q.remove()
-
-        const _neighbors = neighbors(matrix, u.coords)
-
-        for(let i = 0; i < _neighbors.length; i ++) {
-            const e = _neighbors[i]
-
-            if (e.value == target) {
-                console.log('ACHOU O TARGET.')
-                return count
-            }
-
-            mark(matrix, e.coords)
-            q.push(e)
+        if (u.value == target) {
+            console.log('ACHOU')
+            console.log(u.dist)
         }
-        count ++
+
+        neighbors(matrix, u).forEach(e => {
+            q.push(e)
+            mark(matrix, e.coords)
+        })
     }
 }
 
@@ -54,31 +48,33 @@ function coords(matrix, target) {
     }
 }
 
-function neighbors(matrix, coords) {
-    const i = coords[0]
-    const j = coords[1]
+function neighbors(matrix, element) {
+    const i = element.coords[0]
+    const j = element.coords[1]
 
     const up = {
         value: (matrix[i - 1] && matrix[i - 1][j]) || '#',
-        coords: [i - 1, j]
+        coords: [i - 1, j],
+        dist: element.dist + 1
     }
 
     const down = {
         value: (matrix[i + 1] && matrix[i + 1][j]) || '#',
-        coords: [i + 1, j]
+        coords: [i + 1, j],
+        dist: element.dist + 1
     }
 
     const left = {
         value: matrix[i][j - 1] || '#',
-        coords: [i, j - 1]
+        coords: [i, j - 1],
+        dist: element.dist + 1
     }
 
     const right = {
         value: matrix[i][j + 1] || '#',
-        coords: [i, j + 1]
+        coords: [i, j + 1],
+        dist: element.dist + 1
     }
-
-    // console.log(up, down, left, right)
 
     return [up, down, left, right].filter(e => e).filter(e => (e.value != 'x' && e.value != '#' ))
 }
@@ -88,7 +84,4 @@ function mark(matrix, coords) {
     const j = coords[1]
 
     matrix[i][j] = 'x'
-
-    // console.log(matrix)
 }
-
