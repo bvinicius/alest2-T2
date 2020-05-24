@@ -1,10 +1,13 @@
 const fs = require('fs');
 const Queue = require('./Queue');
 
-const maze = fs.readFileSync('./casos/caso0.txt').toString()
+const _case = "casof.txt"
+const maze = fs.readFileSync(`./casos/${_case}`).toString()
     .split('\n')
     .filter(e => e)
     .map(e => e.split(''))
+
+const timestart = process.hrtime()
 
 const start = {
     value: 'A',
@@ -14,6 +17,9 @@ const start = {
 
 console.log(getTarget(maze, start, 'B'))
 
+const timeend = process.hrtime(timestart)
+console.log(`${_case}: ${timeend} sec.`)
+
 function getTarget(matrix, start, target) {
     let q = new Queue()
     q.push(start)
@@ -22,8 +28,7 @@ function getTarget(matrix, start, target) {
     while(q.size()) {
         const u = q.remove()
         if (u.value == target) {
-            console.log('ACHOU')
-            console.log(u.dist)
+            return u.dist
         }
 
         neighbors(matrix, u).forEach(e => {
