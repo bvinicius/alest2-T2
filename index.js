@@ -1,39 +1,47 @@
 const fs = require('fs');
 const Queue = require('./Queue');
 
-const _case = "casof.txt"
-const maze = fs.readFileSync(`./casos/${_case}`).toString()
+const CASE_INDEX = "a"
+const file = `./casos/caso${CASE_INDEX}.txt`
+const maze = fs.readFileSync(file).toString()
     .split('\n')
     .filter(e => e)
     .map(e => e.split(''))
 
-const timestart = process.hrtime()
 
-const start = {
-    value: 'A',
-    coords: coords(maze, 'A'),
-    dist: 0
-}
+const startTime = process.hrtime()
 
-console.log(getTarget(maze, start, 'B'))
+console.log(shortestPath(maze, 'A', 'B'))
 
-const timeend = process.hrtime(timestart)
-console.log(`${_case}: ${timeend} sec.`)
+const endTime = process.hrtime(startTime)
 
-function getTarget(matrix, start, target) {
+console.log(`${CASE_INDEX}: ${endTime} sec.`)
+
+
+/**
+ * Returns the shortest path from `start` to `target`, both elements of `matrix`. If the values of `start` and `target` appear more than once on the matrix,
+ * the first matches found will be used.
+ * @param {*} matrix the matrix to search on.
+ * @param {*} start the value of the element to start on.
+ * @param {*} target the value of the element to get to.
+ */
+function shortestPath(matrix, start, target) {
+    const _start = {
+        value: start,
+        coords: coords(matrix, start),
+        dist: 0
+    }
+    
     let q = new Queue()
-    q.push(start)
 
-    let count = 0
+    q.push(_start)
     while(q.size()) {
         const u = q.remove()
-        if (u.value == target) {
-            return u.dist
-        }
+        if (u.value == target) return u.dist
 
         neighbors(matrix, u).forEach(e => {
             q.push(e)
-            mark(matrix, e.coords)
+            mark(matrix, e)
         })
     }
 }
@@ -53,6 +61,11 @@ function coords(matrix, target) {
     }
 }
 
+/**
+ * Returns an array of valid neighbors of a given `element`. `element` must have a `coords` property: an array of `numbers` between the matrix bounds. Ex: `bounds: [y, x]`
+ * @param {*} matrix the matrix to search on.
+ * @param {*} element the element whose neighbors are being returned.
+ */
 function neighbors(matrix, element) {
     const i = element.coords[0]
     const j = element.coords[1]
@@ -84,9 +97,14 @@ function neighbors(matrix, element) {
     return [up, down, left, right].filter(e => e).filter(e => (e.value != 'x' && e.value != '#' ))
 }
 
-function mark(matrix, coords) { 
-    const i = coords[0]
-    const j = coords[1]
+/**
+ * Given an `element`, this method gets it's coordinates and sets it's value to `x`.
+ * @param {*} matrix the matrix to seach on.
+ * @param {*} element the element to be marker.
+ */
+function mark(matrix, element) { 
+    const i = element.coords[0]
+    const j = element.coords[1]
 
     matrix[i][j] = 'x'
 }
