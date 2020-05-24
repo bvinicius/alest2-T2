@@ -1,0 +1,11 @@
+{
+  "name": "alest2-t2",
+  "version": "1.0.0",
+  "description": "Trabalho da disciplina de Algoritmos e Estruturas de Dados II",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
