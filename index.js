@@ -1,6 +1,6 @@
 const Maze = require('./Maze')
 
-const CASE_INDEX = "g"
+const CASE_INDEX = "a"
 const file = `./casos/caso${CASE_INDEX}.txt`
 
 const startTime = process.hrtime()

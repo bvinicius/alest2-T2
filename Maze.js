@@ -6,11 +6,14 @@ class Maze {
      * Generates a new instance of Maze with the data that is stored in `filepath`.
      * @param {*} filepath the path of the file containing the Maze data.
      */
-    constructor(filepath) {
+    constructor(filepath, start) {
+        const s = process.hrtime()
         this.matrix = fs.readFileSync(filepath).toString()
             .split('\n')
             .filter(e => e)
             .map(e => e.split(''))
+        
+        console.log(process.hrtime(s) + ' sec on constructor.')
     }
 
     /**
@@ -25,10 +28,11 @@ class Maze {
             coords: this.coords(start),
             dist: 0
         }
-        
+
         let q = new Queue()
 
         q.push(_start)
+        const s = process.hrtime()
         while(q.size()) {
             const u = q.remove()
             if (u.value == target) return u.dist
@@ -38,6 +42,7 @@ class Maze {
                 this.mark(e)
             })
         }
+        console.log(process.hrtime(s) + ' sec on while.')
     }
 
     /**
@@ -47,6 +52,7 @@ class Maze {
      * @param {*} target the target to be searched.
      */
     coords(target) {
+        const time0 = process.hrtime()
         for (let i = 0; i < this.matrix.length; i ++) {
             for(let j = 0; j < this.matrix[i].length; j ++) {
                 if (this.matrix[i][j] == target) {
@@ -54,10 +60,11 @@ class Maze {
                 }
             }
         }
+        console.log(`${process.hrtime(time0)} sec to find target.`)
     }
 
     /**
-     * Returns an array of valid neighbors of a given `element`. `element` must have a `coords` property: an array of numbers between the matrix bounds.
+     * Returns an array of unmarked neighbors of a given `element`. `element` must have a `coords` property: an array of numbers between the matrix bounds.
      * Ex: `bounds: [i, j]` will return the neighbors of the element `matrix[i][j]`.
      * @param {*} element the element whose neighbors are being returned.
      */
