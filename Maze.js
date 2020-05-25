@@ -14,6 +14,7 @@ class Maze {
             .map(e => e.split(''))
         
         console.log(process.hrtime(s) + ' sec on constructor.')
+        
     }
 
     /**
