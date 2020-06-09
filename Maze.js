@@ -13,7 +13,6 @@ class Maze {
             .filter(e => e)
             .map(e => e.split(''))
         
-        console.log(process.hrtime(s) + ' sec on constructor.')
     }
 
     /**
@@ -23,6 +22,7 @@ class Maze {
      * @param {*} target the value of the element to get to.
      */
     shortestDistance(start, target) {
+        let distance
         const _start = {
             value: start,
             coords: this.coords(start),
@@ -33,16 +33,30 @@ class Maze {
 
         q.push(_start)
         const s = process.hrtime()
-        while(q.size()) {
-            const u = q.remove()
-            if (u.value == target) return u.dist
 
-            this.neighbors(u).forEach(e => {
-                q.push(e)
-                this.mark(e)
+        let go = true
+        while(go) {
+            const u = q.remove()
+
+            this.neighbors(u).forEach((e) => {
+                const i = e[0]
+                const j = e[1]
+                if (this.matrix[i][j] == target) {
+                    distance = u.dist + 1
+                    go = false
+                } 
+
+                const v = {
+                    value: '.',
+                    coords: [i, j],
+                    dist: u.dist + 1
+                }
+
+                q.push(v)
+                this.mark(v)
             })
         }
-        console.log(process.hrtime(s) + ' sec on while.')
+        return distance
     }
 
     /**
@@ -60,7 +74,6 @@ class Maze {
                 }
             }
         }
-        console.log(`${process.hrtime(time0)} sec to find target.`)
     }
 
     /**
@@ -96,7 +109,7 @@ class Maze {
             dist: element.dist + 1
         }
 
-        return [up, down, left, right].filter(e => e).filter(e => (e.value != 'x' && e.value != '#' ))
+        return [up, down, left, right].filter(e => e).filter(e => (e.value != 'x' && e.value != '#' )).map(e => e.coords)
     }
 
     /**
